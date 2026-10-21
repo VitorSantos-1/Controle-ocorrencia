@@ -229,3 +229,95 @@ data_exemplo/  -> Dados fictícios de demonstração (seed_nfe_exemplo.json).
 
 José Vitor Santos Pinheiro — Análise de Dados e Inteligência Comercial (Varejo, Indústria e Distribuição).
 Contato: vytorsantt@gmail.com
+
+## 🗺️ Modelo de Dados (DER)
+
+Modelo dimensional do recebimento de NF-e no CPD (SQLite no app; camada MySQL alternativa com o mesmo modelo). Renderizado pelo GitHub via Mermaid. *Dados fictícios de demonstração.*
+
+```mermaid
+erDiagram
+    dim_data ||--o{ fact_recebimento : "quando"
+    dim_loja ||--o{ fact_recebimento : "onde"
+    dim_fornecedor ||--o{ fact_recebimento : "de quem"
+    dim_comprador ||--o{ fact_recebimento : "comprador"
+    dim_recebedor ||--o{ fact_recebimento : "recebedor"
+    dim_usuario_cpd ||--o{ fact_recebimento : "lancado por"
+    dim_setor ||--o{ fact_recebimento : "setor"
+    dim_status ||--o{ fact_recebimento : "status"
+    dim_ocorrencia ||--o{ fact_recebimento : "ocorrencia"
+    dim_usuario_cpd ||--o{ usuario_loja : "acessa"
+    dim_loja ||--o{ usuario_loja : "liberada p/"
+    dim_setor ||--o{ dim_resolucao : "tem"
+    dim_ocorrencia ||--o{ dim_resolucao : "tem"
+
+    fact_recebimento {
+        int fact_id PK
+        text nota
+        int sucesso_flag "0|1|2|9"
+        int pendente
+        int data_fk FK
+        int loja_fk FK
+        int fornecedor_fk FK
+        int comprador_fk FK
+        int recebedor_fk FK
+        int usuario_fk FK
+        int setor_fk FK
+        int status_fk FK
+        int ocorrencia_fk FK
+        int minutos_recebimento
+    }
+    dim_usuario_cpd {
+        int pk PK
+        text nome
+        text email UK
+        text senha_hash
+        text cargo
+    }
+    dim_loja {
+        int pk PK
+        text nome_loja UK
+    }
+    dim_fornecedor {
+        int pk PK
+        text razao_social UK
+        text cnpj_cpf UK
+    }
+    dim_comprador {
+        int pk PK
+        text nome_comprador UK
+    }
+    dim_recebedor {
+        int pk PK
+        text nome_recebedor UK
+    }
+    dim_setor {
+        int pk PK
+        text nome_setor UK
+    }
+    dim_ocorrencia {
+        int pk PK
+        text descricao_ocorrencia UK
+    }
+    dim_status {
+        int pk PK
+        text nome_status UK
+    }
+    dim_data {
+        int pk PK "AAAAMMDD"
+        date data_completa
+        smallint ano
+        tinyint mes
+    }
+    dim_resolucao {
+        int pk PK
+        int setor_fk FK
+        int ocorrencia_fk FK
+        varchar descricao_resolucao
+    }
+    usuario_loja {
+        int usuario_fk FK
+        int loja_fk FK
+    }
+```
+
+**Destaques:** `usuario_loja` é uma tabela-ponte (N:N) que define quais lojas cada usuário acessa; `dim_resolucao` liga setor+ocorrência à resolução sugerida. Criação idempotente (`CREATE TABLE IF NOT EXISTS` + `INSERT OR IGNORE`).
