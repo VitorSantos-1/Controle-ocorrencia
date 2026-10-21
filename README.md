@@ -267,49 +267,49 @@ erDiagram
         int minutos_recebimento
     }
     dim_usuario_cpd {
-        int pk PK
+        int pk_id PK
         text nome
         text email UK
         text senha_hash
         text cargo
     }
     dim_loja {
-        int pk PK
+        int pk_id PK
         text nome_loja UK
     }
     dim_fornecedor {
-        int pk PK
+        int pk_id PK
         text razao_social UK
         text cnpj_cpf UK
     }
     dim_comprador {
-        int pk PK
+        int pk_id PK
         text nome_comprador UK
     }
     dim_recebedor {
-        int pk PK
+        int pk_id PK
         text nome_recebedor UK
     }
     dim_setor {
-        int pk PK
+        int pk_id PK
         text nome_setor UK
     }
     dim_ocorrencia {
-        int pk PK
+        int pk_id PK
         text descricao_ocorrencia UK
     }
     dim_status {
-        int pk PK
+        int pk_id PK
         text nome_status UK
     }
     dim_data {
-        int pk PK "AAAAMMDD"
+        int pk_id PK "AAAAMMDD"
         date data_completa
         smallint ano
         tinyint mes
     }
     dim_resolucao {
-        int pk PK
+        int pk_id PK
         int setor_fk FK
         int ocorrencia_fk FK
         varchar descricao_resolucao
