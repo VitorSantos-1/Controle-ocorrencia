@@ -1,0 +1,22 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  qualidade:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Instala ferramentas
+        run: pip install ruff pytest
+      - name: Lint (erros criticos com ruff)
+        run: ruff check --select E9,F63,F7,F82 .
+      - name: Testes (pytest, se houver)
+        run: |
+          if [ -d tests ]; then pytest -q; else echo "Sem suite de testes automatizada neste repositorio."; fi
